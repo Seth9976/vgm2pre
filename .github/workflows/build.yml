@@ -19,11 +19,12 @@ jobs:
       - name: 配置 MSYS2 MinGW 环境  
         uses: msys2/setup-msys2@v2  
         with:  
+          msystem: UCRT64  
           update: true  
-          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-binutils make  
+          install: mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-binutils make  
   
       - name: 编译 vgm2pre  
-        run: cd vgm2pre && mkdir -p obj && make  
+        run: cd vgm2pre && mkdir -p obj && make platform=windows  
   
       - name: 上传 Windows 可执行文件  
         uses: actions/upload-artifact@v4  
