@@ -22,9 +22,20 @@ jobs:
           msystem: UCRT64  
           update: true  
           install: mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-binutils make  
+
+      - name: 修正宏定义冲突
+        run: |
+          sed -i '/__MSVCRT_VERSION__/d' nall/platform.hpp
+          sed -i '/__MSVCRT_VERSION__/d' phoenix/windows/header.hpp
+          sed -i 's/_WIN32_WINNT 0x0501/_WIN32_WINNT 0x0601/g' phoenix/windows/header.hpp
+          sed -i 's/_WIN32_WINNT 0x0501/_WIN32_WINNT 0x0601/g' nall/windows/utf8.hpp
+          sed -i 's/WINVER 0x0501/WINVER 0x0601/g' phoenix/windows/header.hpp
   
       - name: 编译 vgm2pre  
-        run: cd vgm2pre && mkdir -p obj && sed -i 's/__MSVCRT_VERSION__ 0x0601/__MSVCRT_VERSION__ 0x0E00/' ../phoenix/windows/header.hpp && make platform=windows cppflags="-x c++ -std=gnu++11"  
+        run: |
+          cd vgm2pre
+          mkdir -p obj
+          make platform=windows cppflags="-x c++ -std=gnu++11"
   
       - name: 上传 Windows 可执行文件  
         uses: actions/upload-artifact@v4  
