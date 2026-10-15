@@ -1,0 +1,32 @@
+name: build-windows  
+  
+on:  
+  push:  
+    branches: [ master ]  
+  pull_request:  
+  workflow_dispatch:  
+  
+jobs:  
+  build:  
+    runs-on: windows-latest  
+    defaults:  
+      run:  
+        shell: msys2 {0}  
+    steps:  
+      - name: 检出代码  
+        uses: actions/checkout@v4  
+  
+      - name: 配置 MSYS2 MinGW 环境  
+        uses: msys2/setup-msys2@v2  
+        with:  
+          update: true  
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-binutils make  
+  
+      - name: 编译 vgm2pre  
+        run: cd vgm2pre && mkdir -p obj && make  
+  
+      - name: 上传 Windows 可执行文件  
+        uses: actions/upload-artifact@v4  
+        with:  
+          name: vgm2pre-windows-x64  
+          path: vgm2pre/vgm2pre.exe
